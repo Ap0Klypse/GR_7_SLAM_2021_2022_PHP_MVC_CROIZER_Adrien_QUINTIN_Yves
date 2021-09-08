@@ -1,5 +1,117 @@
+@font-face{
+	font-family: 'butler';
+	src:url('police/Butler.woff') format('woff');
+	
+}
+@font-face{
+	font-family: 'butler-bold';
+	src:url('police/Butler-Bold.woff') format('woff');
+}
+@font-face{
+	font-family: 'butler-light';
+	src:url('police/Butler-Light.woff') format('woff');
+}
+
+header
+{
+	border: outset; ;
+	border-color: grey;
+	display: flex;
+	height: 145px;
+	align-items: center;
+	justify-content: space-between;
+	background-color: white;
+}
+
+footer
+{
+font-family: 'Butler';	
+border: outset;
+border-color: grey;
+height: 50px;
+align-items: center;
+display: flex;
+justify-content: space-between;
+background-color: white;
+
+
+}
+
 body
 {
-font-weight: bold;
-background-image : url("../images/gsb.png");
+	background-color: #123E6A;
+	display: flex;
+	flex-direction: column;
+	font-family: 'butler';
+}
+
+#connexion
+{
+	height: 500px;
+	
+	display: flex;
+	justify-content: center;
+}
+fieldset {
+  margin-bottom: 15px;
+  padding: 10px;
+  background-color: grey;
+  box-shadow: 6px 5px 5px 0px rgba(0,0,0,0.75);
+  
+  width: 400px;
+
+}
+
+label {
+  width: 110px;
+  display: inline-block;
+  vertical-align: top;
+  margin: 6px;
+}
+
+#renseigner
+{
+	border: outset; ;
+	border-color: grey;
+	
+	
+	width: 600px;
+	align-items: center;
+	
+	background-color: white;
+}
+
+.forfait
+{
+  margin-bottom: 15px;
+  padding: 10px;
+  background-color: grey;
+  box-shadow: 6px 5px 5px 0px rgba(0,0,0,0.75);
+  font-family: 'butler-bold';
+  width: 400px;
+
+}
+.horsforfait
+{
+  margin-bottom: 15px;
+  padding: 10px;
+  background-color: grey;
+  box-shadow: 6px 5px 5px 0px rgba(0,0,0,0.75);
+  font-family: 'butler-bold';
+  width: 500px;
+  display: flex;
+  justify-content: space-between;
+
+}
+.horsforfaitmodif
+{
+  margin-bottom: 15px;
+  padding: 10px;
+  background-color: grey;
+  box-shadow: 6px 5px 5px 0px rgba(0,0,0,0.75);
+  font-family: 'butler-bold';
+  width: 500px;
+  display: flex;
+  flex-direction: column;
+  
 }
