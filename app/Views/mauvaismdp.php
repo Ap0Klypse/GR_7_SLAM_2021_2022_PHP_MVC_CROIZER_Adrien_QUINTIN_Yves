@@ -19,7 +19,7 @@
 		</header>
 		<div id="connexion">
 			<fieldset>
-				<h1>votre login et/ou votre mot de passe est incorrecte. </h1> <a href="connexion.html">REVENIR A LA PAGE DE CONNEXION</a>
+				<h1>votre login et/ou votre mot de passe est incorrecte. </h1> <a href="connexion.php">REVENIR A LA PAGE DE CONNEXION</a>
 			</fieldset>
 		</div>
 		<footer>

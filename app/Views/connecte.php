@@ -1,3 +1,5 @@
+<?php session_start(); ?>
+
 <!DOCTYPE html>
 					<!-- Page d'accueil HTML -->
 <html>
@@ -19,7 +21,7 @@
             <h2> 
                 
                 
-                Bienvenue sur votre page de visiteur médical _____
+                Bienvenue sur votre page de visiteur médical  <?php echo $_SESSION['iduser']; echo $_SESSION['prenom']; ?>
             </h2>
             <form action="visiteur.php" method="POST">
 				<!-- Bouton qui permet de ce déconnecter d'accéder à renseigner/consulter -->
