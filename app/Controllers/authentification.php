@@ -31,19 +31,24 @@ session_start();
 				}
             
             	$reponse = $bdd->query("SELECT * FROM visiteur WHERE login = '".$_POST['username']."' AND mdp = '".$_POST['password']."'");
-            	if($user=$reponse->fetch()!=null)
-				{
-					session_start();
-					$donneesusuer=$reponse->fetch();
-					$_SESSION['iduser']=$bdd->query("SELECT id FROM visiteur WHERE login = '".$_POST['username']."' AND mdp = '".$_POST['password']."'");
-					$_SESSION['prenom']=$donneesusuer['prenom'];
-					header('Location: connecte.php');
-				}
-				else
-				{
-					header('location: mauvaismdp.php');
-				}
+            	$user=$reponse->fetch();
+				
+				
 					
+					
+					$_SESSION['iduser']=$user['id'];
+					$_SESSION['prenom']=$user['prenom'];
+					$_SESSION['test']='variable de test';
+					if (isset($_SESSION['iduser']))
+					{
+						header('Location: connecte.php');
+					}
+					else {
+						header('location: mauvaismdp.php');
+					}
+						
+					
+				
 				
 					;
 				

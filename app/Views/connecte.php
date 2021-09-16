@@ -14,21 +14,7 @@
 
 	<body>
 		<header >
-			<p>
-                <img src="images/logogsb.jpg" alt="logo de GSB"/>
-
-            </p>
-            <h2> 
-                
-                
-                Bienvenue sur votre page de visiteur médical  <?php echo $_SESSION['iduser']; echo $_SESSION['prenom']; ?>
-            </h2>
-            <form action="visiteur.php" method="POST">
-				<!-- Bouton qui permet de ce déconnecter d'accéder à renseigner/consulter -->
-            	<input type="button" name="renseigner" value="Renseigner fiche de frais" >
-            	<input type="button" name="consulter" value="Consulter fiche de frais" >
-            	<input type="button" name="deco" value="Se déconnecter" >
-            </form>
+			<?php include('header.php'); ?>
 		</header>
 		
 		<footer>	<!-- Bas de page regroupant mentions légales et formulaire de contacte -->
