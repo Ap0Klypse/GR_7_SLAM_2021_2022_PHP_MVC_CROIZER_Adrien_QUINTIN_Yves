@@ -21,21 +21,21 @@
         <div id="connexion">
             
         <fieldset> 	<!-- Permet de regrouper la partie connexion -->
-            <legend><p><br /></p><h1>Connexion</h1></legend>  
+            <p></p><h1 style="width: 151px; margin-left: 110px;">Connexion</h1>    
             <form action="authentification.php" method="POST">
             
                 <!-- Renseignement sur le nom d'ulisateur -->
                 <label><b>Nom d'utilisateur</b></label>
-                <input type="text" placeholder="Entrer le nom d'utilisateur" name="username" required/>
+                <input class=input type="text" placeholder="Entrer le nom d'utilisateur" name="username" required/>
                 <p></p>
 
 				<!-- Renseignement sur le mot de passe -->
                 <label><b>Mot de passe</b></label>
-                <input type="password" placeholder="Entrer le mot de passe" name="password" required/>
+                <input class=input type="password" placeholder="Entrer le mot de passe" name="password" required/>
                 <P></P>
                 <a href="mdpoublie.php">mot de passe oublié</a>
                 <p></p>            
-                <input type="submit" id='submit' value='SE CONNECTER'/>
+                <input class=styled type="submit" id='submit' value='SE CONNECTER'/>
                 
         
             </form>
