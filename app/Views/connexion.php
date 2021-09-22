@@ -35,7 +35,7 @@
                 <P></P>
                 <a href="mdpoublie.php">mot de passe oublié</a>
                 <p></p>            
-                <input class=styled type="submit" id='submit' value='SE CONNECTER'/>
+                <input class=mois type="submit" id='submit' value='SE CONNECTER'/>
                 
         
             </form>
