@@ -11,78 +11,87 @@ use CodeIgniter\Model;
 //=========================================================================================
 class Modele extends Model {
 
-//==========================
-// Code du modele
-//==========================
+// les valeurs "$id" représentent toujours l'id de l'utilisateur connecté
+// "$mois" représente le mois en cours ou celui selectionné
 
-//=========================================================================
-// Fonction 1
-// récupère les données BDD dans une fonction getBillets
-// Renvoie la liste de tous les billets, triés par identifiant décroissant
-//=========================================================================
-public function getBillets() { 
 
-//==========================================================================================
-// Connexion à la BDD en utilisant les données féninies dans le fichier app/Config/Database.php
-//==========================================================================================
-	$db = db_connect();
+public function connexion($login,$password){
+	$db=db_connect();
+	$sql='SELECT * FROM visiteur WHERE login=? AND mdp=?';
+	$resultat=$db->query($sql,[$login,$password]);
+	$resultat=$resultat->getResult();
+	return $resultat;
 
-//=============================
-// rédaction de la requete sql
-//=============================
-    $sql = 'select BIL_ID, BIL_TITRE, BIL_DATE from T_BILLET order by BIL_ID desc';
-	
-//=============================
-// execution de la requete sql
-//=============================	
-    $resultat = $db->query($sql);
-
-//=============================
-// récupération des données de la requete sql
-//=============================
-	$resultat = $resultat->getResult();
-
-//=============================
-// renvoi du résultat au Controleur
-//=============================	
-    return $resultat;
-   
 }
 
 
-//=========================================================================
-// Fonction 2 
-// récupère les données BDD dans une fonction getDetails
-// Renvoie le détail d'un billet précédemment sélectionné par son id
-//=========================================================================
-public function getDetails($id) {
-	
-//==========================================================================================
-// Connexion à la BDD en utilisant les données féninies dans le fichier app/Config/Database.php
-//==========================================================================================
-    $db = db_connect();	
-	
-//=====================================
-// rédaction de la requete sql préparée
-//=====================================
-	$sql = 'SELECT * from T_BILLET WHERE BIL_ID=?';
-	
-//=====================================================
-// execution de la requete sql en passant un parametre id
-//=====================================================	
-    $resultat = $db->query($sql, [$id]);
-	
-//=============================
-// récupération des données de la requete sql
-//=============================
-	$resultat = $resultat->getResult();
+public function genereFraisForfait($id,$mois){
+	$db=db_connect();
+	$creerficher='INSERT INTO fichefrais VALUES(?,?,0,0,date("Y-d-m"),"CR")'
+	$insert='INSERT INTO lignefraisforfait VALUES (?,?,'ETP',0),
+													(?,?,'KM',0),
+													(?,?,'NUI',0),
+													(?,?,'REP',0)';
+	$db->exec($creerficher,[$id,$mois]);
+	$db->exec($insert,[$id,$mois,$id,$mois,$id,$mois,$id,$mois]);
 
-//=============================
-// renvoi du résultat au Controleur
-//=============================		
-    return $resultat;
-  
 }
+
+//
+public function selectFraisForfait($id,$mois){
+	$db=db_connect();
+	$sql='SELECT * FROM lignefraisforfait WHERE idVisiteur=? AND mois=?';
+	$resultat=$db->query($sql,[$id,$mois]);
+	$resultat=$resultat->getResult();
+	return $resultat;
+}
+	
+
+public function updateFraisForfait($id,$mois,$qetape,$qkilo,$qnuit,$qrep){
+	$db=db_connect();
+	$ETP='UPDATE lignefraisforfait SET quantite=? WHERE idVisiteur=? AND mois=? AND idFraisForfait="ETP"';
+	$KM='UPDATE lignefraisforfait SET quantite=? WHERE idVisiteur=? AND mois=? AND idFraisForfait="KM"';
+	$NUI='UPDATE lignefraisforfait SET quantite=? WHERE idVisiteur=? AND mois=? AND idFraisForfait="NUI"';
+	$REP='UPDATE lignefraisforfait SET quantite=? WHERE idVisiteur=? AND mois=? AND idFraisForfait="REP"';
+
+
+	$db->exec($ETP [$id,$mois,$qetape]);
+	$db->exec($KM [$id,$mois,$qkilo]);
+	$db->exec($NUI [$id,$mois,$qnuit]);
+	$db->exec($REP [$id,$mois,$qrep]);
+
+
+}
+
+
+public function selectHorsForfait($id,$mois){
+	$db=db_connect();
+	$sql='SELECT * FROM lignefraishorsforfait WHERE idVisiteur=? AND mois=?';
+	$resultat=$db->query($sql, [$id,$mois]);
+	$resultat= $resultat->getResult();
+	return $resultat;
+
+}
+
+
+public function insertHorsForfait($id,$mois,$lib,$date,$montant){
+	$db=db_connect();
+	$insert='INSERT INTO lignefraishorsforfait VALUES(?,?,?,?,?)';
+	$db->exec($insert, [$id,$mois,$lib,$date,$montant]);
+}
+
+public function supprHorsForfait($id,$mois,$lib){
+	$db=db_connect();
+	$suppr='DELETE FROM lignefraishorsforfait WHERE idVisiteur=? AND mois=? AND lib=?';
+	$db->exec($suppr, [$id,$mois,$lib]);
+}
+
+public function modifHorsForfait($id,$mois,$lib,$nouvlib,$nouvdate,$nouvmontant){
+ 	$db=db_connect();
+	$modif='UPDATE FROM lignefraishorsforfait SET libelle=?, date=?, montant=? WHERE idVisiteur=?, mois=?, libelle=?'
+ 	$db->exec($modif, [$nouvlib,$nouvdate,$nouvmontant,$id,$mois,$lib]);
+ }
+
 
 //==========================
 // Fin Code du modele
