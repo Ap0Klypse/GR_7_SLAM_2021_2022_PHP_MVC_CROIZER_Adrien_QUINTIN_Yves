@@ -33,19 +33,17 @@ session_start();
             	$reponse = $bdd->query("SELECT * FROM visiteur WHERE login = '".$_POST['username']."' AND mdp = '".$_POST['password']."'");
             	$user=$reponse->fetch();
 				
-				
-					
-					
-					$_SESSION['iduser']=$user['id'];
-					$_SESSION['prenom']=$user['prenom'];
-					$_SESSION['test']='variable de test';
-					if (isset($_SESSION['iduser']))
-					{
-						header('Location: connecte.php');
-					}
-					else {
-						header('location: mauvaismdp.php');
-					}
+				$_SESSION['iduser']=$user['id'];
+				$_SESSION['prenom']=$user['prenom'];
+				$_SESSION['test']='variable de test';
+				if (isset($_SESSION['iduser']))
+				{
+					header('Location: connecte.php');
+				}
+				else 
+				{
+					header('location: mauvaismdp.php');
+				}
 						
 					
 				

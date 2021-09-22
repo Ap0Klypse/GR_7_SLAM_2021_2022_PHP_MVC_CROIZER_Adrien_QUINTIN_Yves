@@ -14,7 +14,7 @@
             <p>
                 <img src="images/logogsb.jpg" alt="logo de GSB"/>
             </p>
-            <h1>Bienvenue sur le site de GSB</h1>
+            <h1 style="width:500px">Bienvenue sur le site de GSB</h1>
             <p></p>
             
         </header>
