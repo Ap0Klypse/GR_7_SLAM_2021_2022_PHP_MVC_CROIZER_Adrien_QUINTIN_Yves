@@ -1,4 +1,5 @@
-<?php session_start(); ?>
+
+
 <!DOCTYPE html>
 
 					<!-- Page consultation fiche de frais de l'année HTML -->
@@ -8,7 +9,7 @@
 	<head>
 		<meta charset="utf-8">
 		<!-- Permet la liaison HTML et CSS -->
-    	<link rel="stylesheet" href="style.css"/>
+    	<link rel="stylesheet" href="<?php echo base_url('/public/css/style.css'); ?>"/>
     	<link rel="icon" type="image/png" href="images/logogsbcropped.jpg" />
        <title>GSB-Connecté</title>
 	</head>

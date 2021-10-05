@@ -4,7 +4,7 @@
 
 	<head>
 		<meta charset="utf-8">
-    	<link rel="stylesheet" href="style.css"/>
+    	<link rel="stylesheet" href="<?php echo base_url('/public/css/style.css'); ?>"/>
     	<link rel="icon" type="image/png" href="images/logogsbcropped.jpg" />
        <title>GSB-Mauvais MDP</title>
 	</head>
@@ -19,7 +19,9 @@
 		</header>
 		<div id="connexion">
 			<fieldset>
-				<h1>votre login et/ou votre mot de passe est incorrecte. </h1> <a href="connexion.php">REVENIR A LA PAGE DE CONNEXION</a>
+				<h1>votre login et/ou votre mot de passe est incorrecte. </h1> 
+				<form action="" method="POST">
+					<button class=mois type="submit" id='retour' name='retourconnexion'/>Revenir à la page de connexion</button>
 			</fieldset>
 		</div>
 		<footer>

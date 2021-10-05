@@ -16,37 +16,67 @@ class Modele extends Model {
 
 
 public function connexion($login,$password){
+//requete pour l'identification
+	
+//connexion à gsbv2
 	$db=db_connect();
+
+//écriture de la requète
 	$sql='SELECT * FROM visiteur WHERE login=? AND mdp=?';
+	
+//execution de la requète et récupération des résultats
 	$resultat=$db->query($sql,[$login,$password]);
-	$resultat=$resultat->getResult();
+	$resultat=$resultat->getResult()[0];
 	return $resultat;
 
 }
 
 
+
 public function genereFraisForfait($id,$mois){
+//lorsqu'on arrive sur la page de renseignement et que la fiche du mois courant n'existe pas,
+//on l'a génère.
+
 	$db=db_connect();
-	$creerficher='INSERT INTO fichefrais VALUES(?,?,0,0,date("Y-d-m"),"CR")'
-	$insert='INSERT INTO lignefraisforfait VALUES (?,?,'ETP',0),
-													(?,?,'KM',0),
-													(?,?,'NUI',0),
-													(?,?,'REP',0)';
-	$db->exec($creerficher,[$id,$mois]);
-	$db->exec($insert,[$id,$mois,$id,$mois,$id,$mois,$id,$mois]);
+
+	
+	$creerficher='INSERT INTO fichefrais VALUES(?,?,0,0,2021-11-09,"CR")';
+	
+	$insert='INSERT INTO lignefraisforfait VALUES (?,?,"ETP",0),
+													(?,?,"KM",0),
+													(?,?,"NUI",0),
+													(?,?,"REP",0)';
+	$db->query($creerficher,[$id,$mois]);
+	$db->query($insert,[$id,$mois,$id,$mois,$id,$mois,$id,$mois]);
 
 }
 
-//
+//Pour prendre les 4 ligne de frais forfait d'un mois et d'un utilisateur donné
 public function selectFraisForfait($id,$mois){
+	
+
 	$db=db_connect();
+	//requete qui vérifie l'existence d'un fichefrais du mois
+	$sql='SELECT * FROM fichefrais WHERE idVisiteur=? AND mois=?';
+	$existe=$db->query($sql,[$id,$mois]);
+	$existe=$existe->getResult();
+	
+	
+	//Si c'est vide: la fiche n'est pas crée, on crée la fiche et les 4 lignes de frais correspondante
+	if(! isset($existe[0])){
+		$this->genereFraisForfait($id,$mois);
+
+	}
+
+	//On recupère et on renvoit les lignes frais forfait
 	$sql='SELECT * FROM lignefraisforfait WHERE idVisiteur=? AND mois=?';
 	$resultat=$db->query($sql,[$id,$mois]);
 	$resultat=$resultat->getResult();
 	return $resultat;
+
 }
 	
-
+//Modification des 4 ligne de frais forfait d'un mois et d'un utilisateur donné
 public function updateFraisForfait($id,$mois,$qetape,$qkilo,$qnuit,$qrep){
 	$db=db_connect();
 	$ETP='UPDATE lignefraisforfait SET quantite=? WHERE idVisiteur=? AND mois=? AND idFraisForfait="ETP"';
@@ -55,10 +85,10 @@ public function updateFraisForfait($id,$mois,$qetape,$qkilo,$qnuit,$qrep){
 	$REP='UPDATE lignefraisforfait SET quantite=? WHERE idVisiteur=? AND mois=? AND idFraisForfait="REP"';
 
 
-	$db->exec($ETP [$id,$mois,$qetape]);
-	$db->exec($KM [$id,$mois,$qkilo]);
-	$db->exec($NUI [$id,$mois,$qnuit]);
-	$db->exec($REP [$id,$mois,$qrep]);
+	$db->query($ETP, [$qetape,$id,$mois]);
+	$db->query($KM ,[$qkilo,$id,$mois]);
+	$db->query($NUI, [$qnuit,$id,$mois]);
+	$db->query($REP ,[$qrep,$id,$mois]);
 
 
 }
@@ -76,20 +106,20 @@ public function selectHorsForfait($id,$mois){
 
 public function insertHorsForfait($id,$mois,$lib,$date,$montant){
 	$db=db_connect();
-	$insert='INSERT INTO lignefraishorsforfait VALUES(?,?,?,?,?)';
-	$db->exec($insert, [$id,$mois,$lib,$date,$montant]);
+	$insert='INSERT INTO lignefraishorsforfait(idVisiteur,mois,libelle,date,montant) VALUES(?,?,?,?,?)';
+	$db->query($insert, [$id,$mois,$lib,$date,$montant]);
 }
 
-public function supprHorsForfait($id,$mois,$lib){
+public function supprHorsForfait($id){
 	$db=db_connect();
-	$suppr='DELETE FROM lignefraishorsforfait WHERE idVisiteur=? AND mois=? AND lib=?';
-	$db->exec($suppr, [$id,$mois,$lib]);
+	$suppr='DELETE FROM lignefraishorsforfait WHERE id=?';
+	$db->query($suppr, [$id]);
 }
 
-public function modifHorsForfait($id,$mois,$lib,$nouvlib,$nouvdate,$nouvmontant){
+public function modifHorsForfait($id,$nouvlib,$nouvdate,$nouvmontant){
  	$db=db_connect();
-	$modif='UPDATE FROM lignefraishorsforfait SET libelle=?, date=?, montant=? WHERE idVisiteur=?, mois=?, libelle=?'
- 	$db->exec($modif, [$nouvlib,$nouvdate,$nouvmontant,$id,$mois,$lib]);
+	$modif='UPDATE lignefraishorsforfait SET libelle=?, date=?, montant=? WHERE id=?';
+ 	$db->query($modif, [$nouvlib,$nouvdate,$nouvmontant,$id]);
  }
 
 

@@ -8,12 +8,15 @@
     </h2>
 
 			
-			<form action="consulter.php" method="POST">
-				<input class=bouton type="submit" id="consulter" value="CONSULTER FICHES FRAIS">
+			<form action="" method="POST">
+				
+				<button class=bouton type="submit"  name='consulter' />CONSULTER FICHES FRAIS</button>
 			</form>
-			<form action="renseigner.php" method="POST">
-				<input class=bouton type="submit" id="consulter" value="RENSEIGNER FICHES FRAIS">
+			<form action="" method="POST">
+				
+				<button class=bouton type="submit"  name='renseigner' />RENSEIGNER FICHES FRAIS</button>
 			</form>
-			<form action="deconnexion.php" method="POST">
-				<input class=bouton type="submit" id="deconnexion" value="SE DECONNECTER">
+			<form action="" method="POST">
+				
+				<button class=bouton type="submit"  name='deconnexion' />SE DECONNECTER</button>
 			</form>
