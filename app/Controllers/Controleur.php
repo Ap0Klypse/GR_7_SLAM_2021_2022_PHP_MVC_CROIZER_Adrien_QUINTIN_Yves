@@ -30,8 +30,19 @@ public function index(){
 	 	
 	 	//consulter issu du header
 	 	 if(isset($_POST['consulter'])){
-	 	 	$this->consulte();
+	 	 	//initialement, on affiche le mois d'octobre car exemple complet (septembre cloturé...)
+	 	 	$mois='October';
+	 	 	$this->consulte($mois);
 	 	 }
+
+	 	 if(isset($_POST['changermois'])){
+	 	 	//Id présent dans l'hidden
+	 	 	$this->consulte($_POST['moisselect']);
+	 	 }
+
+	 	
+
+	 	//renseigner (header)
 
 	 	 if(isset($_POST['renseigner'])){
 
@@ -47,13 +58,16 @@ public function index(){
 	 	 }
 
 	 	 if(isset($_POST['modifhorsforfait'])){
+	 	 	//Id présent dans l'hidden
 	 	 	$this->modifhorsforfait($_POST['idFraisHorsForfait']);
 	 	 }
 
 	 	 if(isset($_POST['supprhorsforfait'])){
+	 	 	//Id présent dans l'hidden
 	 	 	$this->supprhorsforfait($_POST['idFraisHorsForfait']);
 	 	 }
 
+	 	//déconnexion(header)
 	 	if(isset($_POST['deconnexion'])){
 
 	 	 	$this->deconnexion();
@@ -133,7 +147,7 @@ public function authentification(){
     }    	
 }
 
- public function renseigne(){
+public function renseigne(){
  	//on met en variable de session le mois actuel
  	$_SESSION['mois']=date('F');
  	//récupération du modèle
@@ -146,117 +160,66 @@ public function authentification(){
  		'ligneff'=>$ligneff,'lignehf'=>$lignehf,
  	]);
 
- }
+}
 
- public function modifforfait(){
+public function modifforfait(){
 
  	$modele= new \App\Models\Modele();
  	$modele->updateFraisForfait($_SESSION['iduser'],$_SESSION['mois'],$_POST['etape'],$_POST['km'],$_POST['nuit'],$_POST['repas']);
  	$this->renseigne();
- }
+}
 
- public function modifhorsforfait($id){
+public function modifhorsforfait($id){
  	// var_dump($_POST);
  	// die;
  	$modele= new \App\Models\Modele();
 
  	$modele->modifHorsForfait($id,$_POST['libelle'],$_POST['date'],$_POST['montant']);
  	$this->renseigne();
- }
+}
 
- public function supprhorsforfait($id){
+public function supprhorsforfait($id){
  	$modele= new \App\Models\Modele();
  	$modele->supprHorsForfait($id);
  	$this->renseigne();
- }
+}
 
- public function ajouterhorsforfait(){
+public function ajouterhorsforfait(){
  	$modele= new \App\Models\Modele();
  	$modele->insertHorsForfait($_SESSION['iduser'],$_SESSION['mois'],$_POST['libelle'],$_POST['date'],$_POST['montant']);
  	$this->renseigne();
- }
+}
 
- public function consulte(){
- 	echo view('consulter');
+public function consulte($mois){
+ 	$modele= new \App\Models\Modele();
+ 	$fichesfrais=$modele->selectFicheFrais($_SESSION['iduser']);
+ 	$ligneff=null;
+ 	$lignehf=null;
+ 	if(isset($mois)){
 
- }
+ 		$ligneff=$modele->selectFraisForfait($_SESSION['iduser'],$mois);
+ 	$lignehf=$modele->selectHorsForfait($_SESSION['iduser'],$mois);
+ 	}
+ 	 	echo view('consulter',[
+ 		'fichesfrais'=>$fichesfrais,
+ 		'ligneff'=>$ligneff,
+ 		'lignehf'=>$lignehf,
+ 	]);
+ 	
 
- public function deconnexion(){
+}
+
+
+
+public function deconnexion(){
 	$_SESSION['iduser']=null;
 	$_SESSION['prenom']=null;
 	$_SESSION['loged']=null;
-	var_dump('deconnecté');
  	echo view('connexion');
 
- }
+}
 
-//======================================================
-// Code du controleur simple (ex fichier Controleur.php)
-//======================================================
 
-// Action 1 : Affiche la liste de tous les billets du blog
-// public function accueil() {
-	    //================
-		//acces au modele
-		//================
-		// $Modele = new \App\Models\Modele();
-		
-	    //===============================
-		//Appel d'une fonction du Modele
-		//===============================	
-		// $donnees = $Modele->getBillets();
-		
-		//=================================================================================
-		//!!! Création d'un jeu de données $data sécurisé pouvant etre passé à la vue
-		//!!! on créé une variable qui récupère le résultat de la requete : $getBillets();
-		//=================================================================================
-		// $data['resultat']=$donnees;
-		
-		//==========================================
-		//on charge la vue correspondante
-		//et on envoie le jeu de données $data à la vue
-		//la vue aura acces a une variable $resultat
-		//==========================================s
-		// echo view('vueAccueil',$data);
-// }
-
-// Action 2 : Affiche les détails sur un billet
-// public function billet($idBillet) {
-		//================
-		//acces au modele
-		//================
-		// $Modele = new \App\Models\Modele();
-		
-		//===============================
-		//Appel d'une fonction du Modele
-		//===============================	
-		// $donnees = $Modele->getDetails($idBillet);
-		
-		//=================================================================================
-		//!!! Création d'un jeu de données $data sécurisé pouvant etre passé à la vue
-		//!!! on créé une variable qui récupère le résultat de la requete : $getBillets();
-		//=================================================================================
-		// $data['resultat']=$donnees;
-  		
-		//==========================================
-		//on charge la vue correspondante
-		//et on envoie le jeu de données $data à la vue
-		//la vue aura acces a une variable $resultat
-		//==========================================
-  		// echo view('vueBillet',$data);
-  
-// }
-
-// // Affiche une erreur
-// // public function erreur($msgErreur) {
-//   // echo view('vueErreur.php', $data);
-// }
-
-// //==========================
-// //Fin du code du controleur simple
-// //===========================
-
-// //fin de la classe
 }
 
 

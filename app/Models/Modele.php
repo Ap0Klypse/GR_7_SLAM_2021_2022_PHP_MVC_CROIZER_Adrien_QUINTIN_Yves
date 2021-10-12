@@ -50,6 +50,14 @@ public function genereFraisForfait($id,$mois){
 	$db->query($insert,[$id,$mois,$id,$mois,$id,$mois,$id,$mois]);
 
 }
+//On récupère les fiches de l'utilisateur (CF consulte)
+public function selectFicheFrais($id){
+	$db=db_connect();
+	$sql='SELECT * FROM fichefrais WHERE idVisiteur =?';
+	$resultat=$db->query($sql,[$id]);
+	$resultat=$resultat->getResult();
+	return $resultat;
+}
 
 //Pour prendre les 4 ligne de frais forfait d'un mois et d'un utilisateur donné
 public function selectFraisForfait($id,$mois){

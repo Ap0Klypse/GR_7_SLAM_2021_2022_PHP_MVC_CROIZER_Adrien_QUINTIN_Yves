@@ -20,7 +20,7 @@
             <fieldset class='forfait'>
                 <form action='' method="POST">
                 <legend><h2>Frais forfaitaires</h2></legend>
-                <ul>	<!-- Formulaire de frais forfaitaires de type number valeur à remplir -->
+                <ul>	<!-- pour chacune des lignes on check pour switch pour savoir quel frais il représente et l'indiquer dans le form -->
                     <?php foreach ($ligneff as $key => $value) {
                         switch ($value->idFraisForfait) {
 
@@ -58,17 +58,16 @@
                     }
 
                     ?>
-                    <!-- <li><label class=width >Forfait Etape :</label> <input type="number" name="etape" value="" required/><br/></li>
-                    <li><label class=width>Frais kilométriques (en km) :</label><input type="number" name="kilometres" value="750" required/><br/></li>
-                    <li><label class=width > Nuitée hôtel : </label> <input type="number" name="nuitées" value="9" required/> <br/></li>
-                    <li><label class=width >rapas restaurant : </label> <input type="number" name="repas" value="12" required/> <br/></li> -->
+                    
                 </ul>
 
                 <input type="submit" name="modifforfait" value="Modifier" >
                 </form>
             </fieldset>
-				<!-- frais hors forfait comprenant la date, puis l'objet et pour finir le prix de l'objet -->
-            
+				<!-- frais hors forfait comprenant la date, puis l'objet et pour finir le prix de l'objet 
+                    On affiche chacuns des frais hors forfait, le hidden est nécessaire pour l'identifier au niveau du post
+                    dans le contrôleur en cas d'update/suppr... C'est aussi pour ça que l'on a 1 formulaire par frais-->
+                
 
             <?php 
             $numhf=1;
@@ -95,7 +94,7 @@
             ?> 
             
 
-				<!-- Ajout d'un nouveau frais gors forfait -->
+				<!-- Ajout d'un nouveau frais hors forfait -->
             <fieldset class="horsforfait"><legend><h2>Ajouter hors forfait</h2></legend>
                 <form action="" method="POST">
                 <label>Le</label><input type="date" name="date" value="" min="2021-01-01" required/> <label>nom</label> <input type="text" name="libelle" value='' required/> <label>montant</label> <input type="number" min='0' name="montant" value="" required/>    

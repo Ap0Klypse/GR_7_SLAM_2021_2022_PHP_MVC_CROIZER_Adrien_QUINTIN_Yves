@@ -18,32 +18,99 @@
 		<header >
 			<?php include('header.php'); ?>
 		</header>
-		<div class=centre id="renseigner"> <!-- Conteneur fiche de frais d'un mois de l'année choisie -->
-            <form action="consulter.php" method="POST">
-                <h1 style="width: 500px;" >Fiche de frais du mois de <input type="month" name="mois" value="2021-09" min="2021-01" required>
-                
-                </h1>
-                    <input class=mois type="submit" name="mois" value="changer de mois">
-            </form>
-            <fieldset class='forfait'>
+		<fieldset class='centre'>
+                        <p>Choisissez un mois à consulter:</p>
+            
+                <!-- affichage des boutons de sélection des mois, l'input hidden est nécessaire (+1 form par choix)
+                pour identifier le mois dans le contrôleur -->
+                <?php foreach ($fichesfrais as $key => $value) {
+
+                    $mois=$value->mois;
+                    echo"<form action='' method='POST'>
+                    <input type='submit' name='changermois' value=$mois >
+                    <input type='hidden' name='moisselect' value=$mois >
+                    </form>
+                    ";
+
+                }
+
+                ?>
+
+        </fieldset>
+
+            
+
+        
+        <div id='renseigner' class=centre>
+        <fieldset class='forfait'>
                 <legend class=box><h2>Frais forfaitaires</h2></legend>
                 <ul>
-                    <li>Forfait Etape : aucun<br/></li>
-                    <li>Frais kilométriques : 750 km<br/></li>
-                    <li>Nuitée hôtel : 9 nuits <br/></li>
-                    <li>Repas restaurant : 12 repas <br/></li>
+                    <!-- pour chacune des lignes on check pour switch pour savoir quel frais il représente et l'indiquer dans le form -->
+                    <?php foreach ($ligneff as $key => $value) {
+                        switch ($value->idFraisForfait) {
+
+                            case 'ETP':
+                                $nomFraisForfait= "Forfait Etape";
+                                $quantite=$value->quantite;
+                                $montant=$value->quantite*110;
+                                $nomInput='etape';
+                                break;
+                            case 'KM':
+                                $nomFraisForfait= "Frais kilométriques";
+                                $quantite=$value->quantite;
+                                $montant=$value->quantite*1;
+                                $nomInput='km';
+                                break;
+                            case 'NUI':
+                                $nomFraisForfait= "Nuitée(s) Hôtel";
+                                $quantite=$value->quantite;
+                                $montant=$value->quantite*80;
+                                $nomInput='nuit';
+                                break;
+                            case 'REP':
+                                $nomFraisForfait= "Repas restaurant";
+                                $quantite=$value->quantite;
+                                $montant=$value->quantite*25;
+                                $nomInput='repas';
+                                break;
+                            
+                            
+                            
+                        }
+                        echo "<li>$nomFraisForfait : $quantite  , montant: $montant €</li> <br/>";
+                    }
+
+
+                    ?>
                 </ul>
                 
             </fieldset>
-            <fieldset class=box>
-                <legend><h2>Frais hors forfaits n°1</h2></legend>
-                <p>Le 18/11/2013</p> <p>Repas représentation</p> <p>156 €</p>
+            <!-- On affiche tous les frais hors forfait-->
+             <?php
+          
+                $numhf=1;
+            foreach ($lignehf as $key => $value) {
+                        
+
+                    $date=$value->date;
+                    $montant=$value->montant;
+                    $libelle=$value->libelle;
+
+                    echo "<fieldset class='horsforfait'>
                 
+                
+                <legend><h2>Frais hors forfaits n°$numhf</h2></legend>
+                
+                <p> le $date   nom : $libelle   montant: $montant €</p>
+
+                
+            </fieldset>";
+                   $numhf++;         
+                }
+            ?> 
             </fieldset>
-            <fieldset class=box>
-                <legend><h2>Frais hors forfaits n°2</h2></legend>
-                <p>Le 22/11/2013</p> <p>Achat fleuriste soirée "Medilog"</p> <p>120,30 €</p>
         </div>
+
 		<footer>	<!-- Bas de page regroupant mentions légales et formulaire de contact -->
             <p></p>
         	<h4>Mentions légales</h4>
@@ -55,3 +122,4 @@
 	</body>
 	
 </html>
+
