@@ -19,15 +19,20 @@ public function index(){
 	
 	//lancement de la session
 	session_start();
-	 // $_SESSION['iduser']=null;
-	 // $_SESSION['prenom']=null;
-	 // $_SESSION['loged']=null;
-	 // $_SESSION['mois']=null;	
+
+	//session_destroy();
+	var_dump("début séssion");
+	var_dump($_COOKIE);
+	var_dump($_SESSION);
+	var_dump($this->request->getIPAddress());
+	 
 	 //on teste si un utilisateur est connecté	
 	 if($this->connecte())
 	 {
-	 	//on teste quels posts sont initiés pour trouver quel formulaire de quelle page a été soumis
 	 	
+	 	
+
+	 	//on teste quels posts sont initiés pour trouver quel formulaire de quelle page a été soumis
 	 	//consulter issu du header
 	 	 if(isset($_POST['consulter'])){
 	 	 	//initialement, on affiche le mois d'octobre car exemple complet (septembre cloturé...)
@@ -98,16 +103,51 @@ public function index(){
 }
 
 public function pageConnexion(){
+	
+	session_destroy();
+
 	echo view('connexion' );
 }
 
 public function connecte(){
+	//loged et variables set? 
+	if(isset($_SESSION['loged'])&&isset($_SESSION['ticket'])&&isset($_COOKIE['ticket']))
+	{
+		//tickets et cookies ok? 
+		if($_COOKIE['ticket']==$_SESSION['ticket']){
+			
+			$ticket=session_id().microtime().rand(0,9999999999);
+			$ticket=hash('sha512', $ticket);
+			unset($_COOKIE['ticket']);
+			setcookie('ticket', $ticket, time()+(60*20));
+			$_SESSION['ticket']=$ticket;
+			var_dump('ticket2');
+			var_dump($_SESSION);
+			var_dump($_COOKIE);
+			return true;
+		}
+		else{
+			$message='session inconsitency! Possible user attack';
 
-	if(isset($_SESSION['loged'])){
+			log_message('alert', $message );
+			$email = \Config\Services::email();
+			$email->setFrom('server@example.com', );
+			$email->setTo('admin@example.com');
+			$email->setSubject('Session alert ');
+			$email->setMessage('a log alert requires your attention:'.$message.
+				' Please check log files for further information');
+			$email->send();
+			log_message('alert', 'email sent');
+			// var_dump('échec test');
+			unset($_COOKIE['ticket']);
+			// var_dump('cookie détruit');
+			// var_dump($_COOKIE);
+			return false;
+		}
 		
-		return true;
 	}
 	else{
+		
 		return false;
 	}
 }
@@ -127,20 +167,46 @@ public function authentification(){
 
         }
         else{
-
+        	//On met en pause pour éviter la force brute
+        	sleep(2);
+        	$newuser=$this->verifdata($_POST['username']);
+        	$newmdp=$this->verifdata($_POST['password']);
         	$modele=  new \App\Models\Modele();
-        	$result=$modele->connexion($_POST['username'],$_POST['password']);
+        	$result=$modele->connexion($newuser,$newmdp);
 
         	if(isset($result)){
-        		//var_dump($result);
-        		//die;
+
         		$_SESSION['iduser']=$result->id;
 				$_SESSION['prenom']=$result->prenom;
 				$_SESSION['loged']='';
+				
+
+
+				//génération cookie
+				$cookie_name="ticket";
+				// On génère quelque chose d'aléatoire
+				$ticket=session_id().microtime().rand(0,9999999999);
+				// on hash pour avoir quelque chose de propre qui aura toujours la même forme
+				$ticket=hash('sha512', $ticket);
+				// On enregistre des deux cotés
+				
+
+				setcookie($cookie_name, $ticket, time()+(60*20)); 
+				// Expire au bout de 20 min
+				$_SESSION['ticket']=$ticket;
+				var_dump('ticket1');
+				var_dump($_SESSION);
+				var_dump($_COOKIE);
+				
 				echo view('connecte');
+
         	}
         	else{
+        		$ip=$this->request->getIPAddress();
+        		log_message('warning', "failed authentication for user : {id} using password : {password} venant de l'ip: {ip}",
+        		 ['id'=>$newuser, 'password'=>$newmdp, 'ip'=>$ip] );
         		echo view('mauvaismdp');
+
         	}
         }
 
@@ -165,16 +231,21 @@ public function renseigne(){
 public function modifforfait(){
 
  	$modele= new \App\Models\Modele();
- 	$modele->updateFraisForfait($_SESSION['iduser'],$_SESSION['mois'],$_POST['etape'],$_POST['km'],$_POST['nuit'],$_POST['repas']);
+ 	$etape=$this->verifdata($_POST['etape']);
+ 	$km=$this->verifdata($_POST['km']);
+ 	$nuit=$this->verifdata($_POST['nuit']);
+ 	$repas=$this->verifdata($_POST['repas']);
+ 	$modele->updateFraisForfait($_SESSION['iduser'],$_SESSION['mois'],$etape,$km,$nuit,$repas);
  	$this->renseigne();
 }
 
 public function modifhorsforfait($id){
- 	// var_dump($_POST);
- 	// die;
- 	$modele= new \App\Models\Modele();
 
- 	$modele->modifHorsForfait($id,$_POST['libelle'],$_POST['date'],$_POST['montant']);
+ 	$modele= new \App\Models\Modele();
+ 	$libelle=$this->verifdata($_POST['libelle']);
+ 	$date=$this->verifdata($_POST['date']);
+ 	$montant=$this->verifdata($_POST['montant']);
+ 	$modele->modifHorsForfait($id,$libelle,$date,$montant);
  	$this->renseigne();
 }
 
@@ -186,7 +257,10 @@ public function supprhorsforfait($id){
 
 public function ajouterhorsforfait(){
  	$modele= new \App\Models\Modele();
- 	$modele->insertHorsForfait($_SESSION['iduser'],$_SESSION['mois'],$_POST['libelle'],$_POST['date'],$_POST['montant']);
+ 	$libelle=$this->verifdata($_POST['libelle']);
+ 	$date=$this->verifdata($_POST['date']);
+ 	$montant=$this->verifdata($_POST['montant']);
+ 	$modele->insertHorsForfait($_SESSION['iduser'],$_SESSION['mois'],$libelle,$date,$montant);
  	$this->renseigne();
 }
 
@@ -212,11 +286,18 @@ public function consulte($mois){
 
 
 public function deconnexion(){
-	$_SESSION['iduser']=null;
-	$_SESSION['prenom']=null;
-	$_SESSION['loged']=null;
+	session_destroy();
+	unset($_COOKIE['ticket']);
+
  	echo view('connexion');
 
+}
+
+public function verifdata(String $chaine){
+	$newdata = htmlspecialchars($chaine);
+
+	$newdata = str_replace(["\n","\r",PHP_EOL],"", $newdata);
+	return $newdata;
 }
 
 
